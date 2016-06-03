@@ -22,7 +22,7 @@
           <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
         </button>
         <!-- ZAČETEK: Ime vaše aplikacije -->
-        <a class="navbar-brand" href="index.html">{ime vaše aplikacije}</a>
+        <a class="navbar-brand" href="index.html">EHR podpora zravnikom in bolnikom na podeželju</a>
         <!-- KONEC: Ime vaše aplikacije -->
       </div>
       <div class="collapse navbar-collapse" id="menujska-vrstica">
@@ -45,7 +45,9 @@
           </div>
           <div class="panel-body">
             <!-- ZAČETEK: Opis ideje, ki jo aplikacija podpira -->
-            <p><strong>TO-DO</strong>: Na tem mestu je potrebno dodati <strong>osnovni opis ideje rešitve</strong> (kakšen je osnovni SCENARIJ UPORABE, KDO je ciljna publika, za kakšen NAMEN se aplikacija uporablja).</p><p class="text-muted">Opis naj ne bo daljši od 200 besed.</p>
+            <p>Osnovni namen aplikacije je pregled in beleženje vitalnih znakov bolnika. Do podatkov lahko dostopa bolnik sam oziroma njegov zdravnik, v primeru, da ima podatek o bolnikovem EHRid-ju. Aplikacija, bi bila najbolj uporabna na podeželju, oziroma na težko dostopnih lokacijah, do katerih zdravnik težko dostopa. Prav tako ob nizkem številu zdravnikov, oziroma ostalega medicinskega osebja, ki pokriva večje območje, in ob enem ne more zagotavljati pogostih obiskov bolnikov, še posebej tistih bolj bolnih, kateri bi potrebovali bolj pogosto nego. V tem primeru, lahko sorodniki, oziroma skrbniki bolnikov, ki s samimi bolniki tudi živijo, v določenih intervalih merili bolnikove vitalne znake in tako beležili bolnikovo zdravstveno stanje. Sami zdravniki oziroma ostalo medicinsko osebje, prav tako pregleduje bolnikove znake in se v primeru znatnega poslabšanja odpravi na bolnikovo lokacijo.</p>
+            <p>Aplikacija temelji na lanskem demo primeru, z dodatnimi izboljšavami in dodanimi funkcionalnostmi.</p>
+            <p>Aplikacija je optimizirana tako, da ni potrebno večkratno vnašanje ehrId-ja. Prav tako ni mogoče dostopati do vnosa oziroma pregleda vitalnih znakov bolnika, če nimamo "izbranega" bolnikovega ehrId-ja. Večina dodatnih funkcionalnosti je dostopna prek razširi/skrij funkcionalnosti, tako da ni preveč podatkov prikazanih na strani in posledično je stran bolj uporabniško prijazna. Vitalni znaki bolnikov so prikazani s črtnim grafom. Dodan je zemljevid, ki prikazuje lokacijo uporabnika in zdravstvene ustanove v radiju 100km.</p>
             <!-- KONEC: Opis ideje, ki jo aplikacija podpira -->
           </div>
         </div>
@@ -55,7 +57,10 @@
           </div>
           <div class="panel-body">
             <!-- ZAČETEK: Uporabljeni zunanji viri podatkov -->
-            <p><strong>TO-DO</strong>: Na tem mestu je navesti zunanji vir podatkov (URL naslov), na kakšen način ste ga uporabili (neposredni API klic, uvožena statična datoteka ipd.) in kaj je bil namen uporabe (kako se vključuje v osnovno idejo aplikacije).</p>
+            <p>Google Maps Api ter knjižnjica places:</p>
+            <p>https://maps.googleapis.com/maps/api/js?key=AIzaSyCHzwwIGsk7-8_0vE-hP3EmqHc5MsV_EmU&&callback=initMap&libraries=places</p>
+            <p>Uporabljen je neposredni API klic</p>
+            <p>Zemljevid prikazuje uporabnikovo(bolnik, medicinsko osebje) lokacijo in vse zdravstvene ustanove(bolnišnica) v oddaljenosti 100km. Zemljevid prinaša sami aplikaciji dodano vrednost, saj ima uporabnik na voljo podatke (ime, naslov, tel. št.) o najbližjih zdravstevnih ustanovah. Bolnik in zdravnik se lahko hitro odločita kam bi kateri želel iti oziroma poklicati za informacije v primeru, da potrebuje pomoč oziroma želi kontaktirati ustanove v primeru, da jih obvesti o morebitni napotitvi bolnika. Kontaktni podatki so takoj na voljo, in ni potrebno izgubljati časa z iskanjem le teh prek drugih virov!</p>
             <!-- KONEC: Uporabljeni zunanji viri podatkov -->
           </div>
         </div>
@@ -65,7 +70,8 @@
           </div>
           <div class="panel-body">
             <!-- ZAČETEK: Master/detail načrtovalski vzorec -->
-            <p><strong>TO-DO</strong>: Na tem mestu morate navesti uporabljen master/detail načrtovalski vzorec in na kakšen način ga nameravate uporabiti.</p>
+            <p>Master/detail načrtovalski vzorec sem uporabil pri praktično vseh primerih uporabe, kateri imajo opravka s pregledom in vnosom podatkov o bolniku, oziroma kreiranjem novega zapisa o bolniku (karton).</p>
+            <p>Uporaba master/detail načrtovalskega vzorca omogoča bolj "čisto" aplikacijo, in prikazuje le tiste dele aplikacije, kateri so bili zahtevani s strani uporabnika v določenem trenutku. Vzorec deluje tako, da na začetku skriva podrobnosti, s pritiskom na gumb "Razširi" pa te podrobnosti postanejo dostopne. Istočasno ponoven pritisk na isti gumb, sedaj z napisom "Skrij", podrobnosti skrije.</p>
             <!-- KONEC: Master/detail načrtovalski vzorec -->
           </div>
         </div>
@@ -75,7 +81,9 @@
           </div>
           <div class="panel-body">
             <!-- ZAČETEK: Uporabljeni zunanji viri podatkov -->
-            <p><strong>TO-DO</strong>: Na tem mestu je potrebno navesti uporabljeno tehniko vizualizacije podatkov (za pomoč lahko uporabite primer iz <a href="https://github.com/mbostock/d3/wiki/Gallery" target="_blank">D3.js galerije</a>) in zakaj je bila ta tehnika izbrana.</p>
+            <p>Za vizualizacijo podatkov sem uporabil preprosti črtni graf. Za ta graf sem se odločil zaradi same preprostosti in enostavne razpoznavnosti vrednosti na njem. Prikaz vrednosti se spreminja glede na tip vitalnih znakov, katerih vrednosti meritev želimo prikazati.</p>
+            <p>Uporabljena knjižica za grafe: Highcharts</p>
+            <p>https://code.highcharts.com/highcharts.js</p>
             <!-- KONEC: Uporabljeni zunanji viri podatkov -->
           </div>
         </div>

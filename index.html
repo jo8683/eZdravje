@@ -1,15 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
   <meta charset="utf-8">
   <title>eZdravje :: 4. DN :: OIS 2015/2016</title>
   <link href="knjiznice/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {padding-top: 70px;}
+    #map {
+        height: 500px;
+        width: 300px;
+      }
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+      }
+    .x.axis path {
+      display: none;
+      }
+    .line {
+      fill: none;
+      stroke: steelblue;
+      stroke-width: 1.5px;
+    }
   </style>
   <script src="knjiznice/js/jquery-2.2.3.min.js"></script>
   <script src="knjiznice/js/bootstrap.min.js"></script>
   <script src="knjiznice/js/koda.js"></script>
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHzwwIGsk7-8_0vE-hP3EmqHc5MsV_EmU&&callback=initMap&libraries=places"></script>  
 </head>
 <body>
 
@@ -22,14 +43,14 @@
           <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
         </button>
         <!-- ZAČETEK: Ime vaše aplikacije -->
-        <a class="navbar-brand" href="index.html">{ime vaše aplikacije}</a>
+        <a class="navbar-brand" href="index.html">EHR podpora zravnikom in bolnikom na podeželju</a>
         <!-- KONEC: Ime vaše aplikacije -->
       </div>
       <div class="collapse navbar-collapse" id="menujska-vrstica">
         <ul class="nav navbar-nav">
           <li><a href="opis.html">Opis ideje</a></li>
           <li><a href="nacrt.html">Načrt informacijske rešitve</a></li>
-          <li><a href="#">Generiranje podatkov</a></li>
+          <li><a href="#" onclick="generirajPodatke(1);generirajPodatke(2);generirajPodatke(3);">Generiranje podatkov</a></li>
         </ul>
       </div>
     </div>
@@ -38,13 +59,80 @@
 
   <!-- ZAČETEK: Vsebina aplikacije -->
   <div class="container">
-    <div class="row">
-      <div class="col-lg-12 text-center">
-        <p class="lead"><strong>TO-DO</strong>: Na tem mestu implementirajte vašo aplikacijo.</p>
-      </div>
-    </div>
-  </div>
-  <!-- KONEC: Vsebina aplikacije -->
+      <!-- Preberi EHR obstoječega bolnika -->
+        <div class="panel panel-default">
+  				<div class="panel-heading">
+  					<div class="row">
+  						<div class="col-lg-8 col-md-8 col-sm-8"><b>Preberi EHR zapis</b> obstoječega bolnika</div>
+  						<div class="col-lg-4 col-md-4 col-sm-4"><select class="form-control input-sm" id="preberiObstojeciEHR"></select></div>
+  					</div>
+  				</div>
+  				<div class="panel-body">
+  					<span class="label label-default">EHR ID</span><input id="preberiEHRid" type="text" class="form-control input-mini" placeholder="Vnesite EHR id bolnika">
+  					<button type="button" class="btn btn-primary btn-xs" onclick="preberiEHRodBolnika()">Preberi osnovne podatke o bolniku</button><span id="preberiSporocilo"></span>
+  				<!-- Pregled meritev -->
+  				  <div class="panel panel-default">
+              <div class="panel-heading">
+                <div class="row">
+                  <div class="col-lg-6 col-md-6 col-sm-6"><b>Pregled</b> meritev <b>vitalnih znakov</b> bolnika</div>
+                  <button type="button" disabled class="btn btn-default btn-xs" id="buttonRazsiriPrikazMeritev" style="float: right"  onclick="razsiriPrikazMeritev()">Razširi</button>
+                </div> 
+              </div>
+                <div class="panel-body" style="display: none" id="bodyPrikazMeritev">
+                  <div class="row">
+                    <div class="col-md-6"><div id="rezultatMeritveVitalnihZnakov"></div></div><div class="col-md-6"><div><div id="grafPrikazMeritev" style="width:500px; height:400px;"></div></div>       
+                 </div>
+                </div>
+            </div>  
 
+  				<!-- Vnos meritev -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-lg-8 col-md-8 col-sm-8"><b>Vnos</b> meritve <b>vitalnih znakov</b> bolnika</div>
+                    <button type="button" disabled class="btn btn-default btn-xs" id="buttonRazsiriVnosMeritev" style="float: right" onclick="razsiriVnosMeritev()">Razširi</button>
+                </div>
+            </div>
+            <div class="panel-body" id="bodyVnosMeritev" style="display: none">
+                <span class="label label-default">EHR ID</span><span class="input-group-addon" id="vnosMeritveEHRid"></span>
+                <span class="label label-default">Ime</span><span class="input-group-addon" id="vnosMeritveImeEHRid"></span>
+                <span class="label label-default">Priimek</span><span class="input-group-addon" id="vnosMeritvePriimekEHRid"></span>
+                <span class="label label-default">Datum Rojstva</span><span class="input-group-addon" id="vnosMeritveDatumRojstvaEHRid"></span>
+                <span class="label label-default">Datum in ura</span><input id="dodajVitalnoDatumInUra" type="text" class="form-control input-mini" placeholder="Vnesite vrednost: 2016-03-24T11:40Z">
+                <span class="label label-default">Telesna višina</span><div class="input-group"><input id="dodajVitalnoTelesnaVisina" type="text" class="form-control input-mini" placeholder="Vnesite vrednost: 185"><span class="input-group-addon">cm</span></div>
+                <span class="label label-default">Telesna teža</span><div class="input-group"><input id="dodajVitalnoTelesnaTeza" type="text" class="form-control input-mini" placeholder="Vnesite vrednost: 80.00"><span class="input-group-addon">kg</span></div>
+                <span class="label label-default">Telesna temperatura</span><div class="input-group"><input id="dodajVitalnoTelesnaTemperatura" type="text" class="form-control input-mini" placeholder="Vnesite vrednost: 36.50"><span class="input-group-addon">°C</span></div>
+                <span class="label label-default">Sistolični krvni tlak</span><div class="input-group"><input id="dodajVitalnoKrvniTlakSistolicni" type="text" class="form-control input-mini" placeholder="Vnesite vrednost: 118"><span class="input-group-addon">mm Hg</span></div>
+                <span class="label label-default">Diastolični krvni tlak</span><div class="input-group"><input id="dodajVitalnoKrvniTlakDiastolicni" type="text" class="form-control input-mini" placeholder="Vnesite vrednost: 75"><span class="input-group-addon">mm Hg</span></div>
+                <span class="label label-default">Nasičenost krvi s kisikom</span><div class="input-group"><input id="dodajVitalnoNasicenostKrviSKisikom" type="text" class="form-control input-mini" placeholder="Vnesite vrednost: 98"><span class="input-group-addon">%</span></div>
+                <span class="label label-default">Merilec</span><input id="dodajVitalnoMerilec" type="text" class="form-control input-mini" placeholder="Vnesite vrednost: Gozdni Joža">
+                <button type="button" class="btn btn-primary btn-xs" onclick="dodajMeritveVitalnihZnakov()">Dodaj meritve vitalnih znakov</button><span id="dodajMeritveVitalnihZnakovSporocilo"></span>
+            </div>
+          </div>
+        </div>
+  	</div>
+      
+        <!-- Kreiraj EHR novega bolnika -->
+        <div class="panel panel-default">
+  				<div class="panel-heading">
+  					<div class="row">
+  						<div class="col-lg-8 col-md-8 col-sm-8"><b>Kreiraj EHR zapis</b> za novega bolnika</div>
+  						<button type="button" class="btn btn-default btn-xs" id="buttonRazsiriKreirajEHR" style="float: right" onclick="razsiriKreirajEHR()">Razširi</button>
+  					</div>
+  				</div>
+  				<div class="panel-body" id="bodyKreirajEHR" style="display: none">
+  					<span class="label label-default">Ime</span><input id="kreirajIme" type="text" class="form-control input-mini" placeholder="Vnesite ime bolnika: Polde">
+  					<span class="label label-default">Priimek</span><input id="kreirajPriimek" type="text" class="form-control" placeholder="Vnesite priimek bolnika: Hribovski">
+  					<span class="label label-default">Datum rojstva</span><input id="kreirajDatumRojstva" type="text" class="form-control" placeholder="Vnesite rojstni datum bolnika: 1957-03-10T09:08">
+  					<button type="button" class="btn btn-primary btn-xs" onclick="kreirajEHRzaBolnika()">Dodaj osnovne podatke o bolniku</button><span id="kreirajSporocilo"></span>
+  				</div>
+  			</div>
+  			
+  			<!-- Google maps -->
+          <div><title> Lokacija bližnjih bolnišnic </title></div>  			
+          <div id="map" style="width: 100%; height 100%"></div>
+  			
+  		</div> 	
+  </div>
 </body>
 </html>
